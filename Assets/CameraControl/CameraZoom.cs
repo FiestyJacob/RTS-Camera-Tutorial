@@ -2,15 +2,16 @@
 
 namespace CameraControl {
 	public class CameraZoom : MonoBehaviour{
-		[SerializeField] private Transform _cameraHolder;
-		[SerializeField] private float _smoothing = 5f;
 		[SerializeField] private float _speed = 25f;
+		[SerializeField] private float _smoothing = 5f;
 		[SerializeField] private Vector2 _range = new (30f, 70f);
-	
-		private float _input;
-		private Vector3 _targetPosition;
-		
+		[SerializeField] private Transform _cameraHolder;
+
 		private Vector3 _cameraDirection => transform.InverseTransformDirection(_cameraHolder.forward);
+	
+		private Vector3 _targetPosition;
+		private float _input;
+		
 		
 		private void Awake() {
 			_targetPosition = _cameraHolder.localPosition;
@@ -21,12 +22,13 @@ namespace CameraControl {
 		}
 
 		private void Zoom() {
-			_targetPosition += _cameraDirection * (_input * _speed);
-			
-			if (_targetPosition.magnitude < _range.x) _targetPosition = -_cameraDirection * _range.x;
-			if (_targetPosition.magnitude > _range.y) _targetPosition = -_cameraDirection * _range.y;
-			
+			Vector3 nextTargetPosition = _targetPosition + _cameraDirection * (_input * _speed);
+			if(IsInBounds(nextTargetPosition)) _targetPosition = nextTargetPosition;
 			_cameraHolder.localPosition = Vector3.Lerp(_cameraHolder.localPosition, _targetPosition, Time.deltaTime * _smoothing);
+		}
+
+		private bool IsInBounds(Vector3 position) {
+			return position.magnitude > _range.x && position.magnitude < _range.y;
 		}
 		
 		private void Update() {

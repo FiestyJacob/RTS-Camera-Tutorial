@@ -5,8 +5,8 @@ namespace CameraControl {
 		[SerializeField] private float _speed = 15f;
 		[SerializeField] private float _smoothing = 5f;
 		
-		private float _currentAngle;
 		private float _targetAngle;
+		private float _currentAngle;
 		
 		private void Awake() {
 			_targetAngle = transform.eulerAngles.y;
